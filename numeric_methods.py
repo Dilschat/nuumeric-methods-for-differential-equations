@@ -6,10 +6,10 @@ class Solver(object):
         self.x0 = x0
         self.y0 = y0
         self.X = X
-
+        self.c = self.calculateConstant(self.x0, self.y0)
     def real_solution(self):
         x = numpy.linspace(self.x0, self.X, 100)
-        y = self.calculate_function(x)
+        y = self.calculate_function(x, self.c)
         return [x, y]
 
     def euler_method(self, h):
@@ -54,11 +54,14 @@ class Solver(object):
     def calculate_derivative(self, x, y):
         return x * numpy.power(y, 1.5) + x * y
 
-    def calculate_function(self, x):
+    def calculate_function(self, x, c):
         return numpy.power(numpy.e, (numpy.power(x, 2) / 2)) / numpy.power((
-            1.5 * numpy.power(numpy.e, 1 / 4) - numpy.power(numpy.e, numpy.power(x, 2) / 4)), 2)
+            c - numpy.power(numpy.e, numpy.power(x, 2) / 4)), 2)
+
+    def calculateConstant(self, x0, y0):
+        return numpy.power(numpy.e, numpy.power(x0, 2)/4)+numpy.power(numpy.power(numpy.e, numpy.power(x0, 2)/2)/y0, 0.5)
 
     def calculate_error(self, x, y):
         error_y = list()
-        error_y = numpy.abs(numpy.subtract(y, self.calculate_function(x)))
+        error_y = numpy.abs(numpy.subtract(y, self.calculate_function(x, self.c)))
         return [x, error_y]

@@ -108,6 +108,7 @@ class PlotCanvas(FigureCanvas):
 
     def plot(self, title, step):
         solver = methods.Solver(START_SEGMENT, Y_START_POINT, END_SEGMENT)
+        real_solution = solver.real_solution()
         if "Euler" in title:
             self.solution = solver.euler_method(step)
         elif "improved" in title:
@@ -115,11 +116,14 @@ class PlotCanvas(FigureCanvas):
         elif "Runge-kutta" in title:
             self.solution = solver.runge_kutta_method(step)
         elif "Real" in title:
-            self.solution=solver.real_solution()
+            self.solution = solver.real_solution()
         else:
             raise IOError
         main_plot = self.figure.add_subplot(111)
-        main_plot.plot(self.solution[0], self.solution[1])
+
+        main_plot.plot(self.solution[0], self.solution[1], label=title)
+        main_plot.plot(real_solution[0], real_solution[1], label='real solution')
+        main_plot.legend(loc='upper left')
         main_plot.set_title(title)
         self.draw()
 
